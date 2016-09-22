@@ -147,5 +147,12 @@ public class JonBot extends TeamRobot
 		setTurnGunLeft(e.getBearing());
 
 		execute();
-	}	
+	}
+
+	public void onHitRobot(HitRobotEvent e) {
+		setTurnRight(e.getBearing() + 90);
+		setTurnGunLeft(e.getBearing());
+
+		execute();
+	}
 }
