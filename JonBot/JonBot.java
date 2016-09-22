@@ -15,8 +15,7 @@ import static robocode.util.Utils.normalRelativeAngleDegrees;
  */
 public class JonBot extends TeamRobot
 {
-	private ArrayList<String> friendlies = new ArrayList<>();
-	private ArrayList enemies = new ArrayList<>();
+	private ArrayList<ScannedRobotEvent> enemies = new ArrayList<>();
 	private byte scanDirection = 1;
 	String targetName;
 	boolean movingForward = true;
@@ -25,12 +24,6 @@ public class JonBot extends TeamRobot
 	 * run: JonBot's default behavior
 	 */
 	public void run() {
-		friendlies.add("Champion");
-		friendlies.add("RocketDoll");
-		friendlies.add("StaticTinTin");
-		friendlies.add("Jelly");
-		friendlies.add("McKiller");
-
 		setAllColors(Color.BLACK);
 		setBulletColor(Color.BLUE);
 		setAdjustRadarForGunTurn(true);
@@ -94,38 +87,37 @@ public class JonBot extends TeamRobot
 			scan();
 		}
 
-//		//** based on http://mark.random-article.com/robocode/basic_scanning.html
-//		setTurnRadarRight(getHeading() - getRadarHeading() + e.getBearing());
-//		scanDirection *= -1; // changes value from 1 to -1
-//		setTurnRadarRight(360 * scanDirection);
-////		execute();
-//		// ********
-//		Robot target = null;
-//		if (isTeammate(e.getName())) {
-//			setEventPriority("friendly", 0);
-//		} else {
-//			//** based on https://sourceforge.net/p/robocode/discussion/116459/thread/df3a124f/
-//			enemies.add(e);
-//			System.out.println("enemy found: " + e.getName());
-//			double weakestEnergy = e.getEnergy();
-//			for (int i = 0; i < enemies.size(); i++) {
-//				Robot current = (Robot)enemies.get(i);
-//				double otherEnemyEnergy = current.getEnergy();
-//				if (otherEnemyEnergy < weakestEnergy) {
-//					weakestEnergy = otherEnemyEnergy;
-//					target = current;
-//				}
-//			}
-//			if (target.equals(e)) {
-//				System.out.println("target acquired");
-//				double absoluteBearing = getHeading() + e.getBearing();
-//				setTurnGunRight(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeading()));
-//				if (getGunHeat() == 0 && Math.abs(getGunTurnRemaining()) < 10)
-//					setFire(Math.min(400 / e.getDistance(), 3));
-//			}
-//		}
-//		//********
-//		scan();
+		//** based on http://mark.random-article.com/robocode/basic_scanning.html
+		setTurnRadarRight(getHeading() - getRadarHeading() + e.getBearing());
+		scanDirection *= -1; // changes value from 1 to -1
+		setTurnRadarRight(360 * scanDirection);
+//		execute();
+		// ********
+		ScannedRobotEvent target = null;
+		if (isTeammate(e.getName())) {
+			setEventPriority("friendly", 0);
+		} else {
+			//** based on https://sourceforge.net/p/robocode/discussion/116459/thread/df3a124f/
+			enemies.add(e);
+			System.out.println("enemy found: " + e.getName());
+			double weakestEnergy = e.getEnergy();
+			for (int i = 0; i < enemies.size(); i++) {
+				ScannedRobotEvent current = enemies.get(i);
+				double otherEnemyEnergy = current.getEnergy();
+				if (otherEnemyEnergy < weakestEnergy) {
+					weakestEnergy = otherEnemyEnergy;
+					target = current;
+				}
+			}
+			if (target.equals(e)) {
+				System.out.println("target acquired");
+				setTurnGunRight(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeading()));
+				if (getGunHeat() == 0 && Math.abs(getGunTurnRemaining()) < 10)
+					setFire(Math.min(400 / e.getDistance(), 3));
+			}
+		}
+		//********
+		scan();
 	}
 
 	/**
