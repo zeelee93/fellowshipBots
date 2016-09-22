@@ -46,9 +46,9 @@ public class JonBot extends TeamRobot
 		while(true) {
 			setTurnRadarRight(360);
 			randomDirection = r.nextInt(180);
-			if (counter % 5 == 0)
+			if (counter % 10 == 0)
 				setTurnRight(getHeading() - randomDirection);
-			if (counter % 6 == 0)
+			if (counter % 11 == 0)
 				setTurnLeft(getHeading() - randomDirection);
 			waitFor(new TurnCompleteCondition(this));
 			setAhead(1000);
@@ -132,7 +132,6 @@ public class JonBot extends TeamRobot
 	 * onHitByBullet: What to do when you're hit by a bullet
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
-		// Replace the next line with any behavior you would like
 		setTurnLeft(90);
 		setTurnGunRight(e.getBearing());
 		fire(2);
@@ -144,17 +143,9 @@ public class JonBot extends TeamRobot
 	 * onHitWall: What to do when you hit a wall
 	 */
 	public void onHitWall(HitWallEvent e) {
-		// Replace the next line with any behavior you would like
-//		setTurnRight(e.getBearing());
-//		setTurnGunLeft(e.getBearing());
-//		setBack(1000);
-		if (movingForward) {
-			setBack(40000);
-			movingForward = false;
-		} else {
-			setAhead(40000);
-			movingForward = true;
-		}
+		setTurnRight(e.getBearing() + 90);
+		setTurnGunLeft(e.getBearing());
+
 		execute();
 	}	
 }
